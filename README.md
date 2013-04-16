@@ -1,6 +1,56 @@
-# Minitest::English
+# minitest-english
 
-TODO: Write a gem description
+MiniTest is an awesome testing framework. It's small, fast, and has very little magic.
+
+> There are two hard things in Computer Science: cache invalidation and naming things.
+> — Phil Karlton
+
+Unfortunately, MiniTest fails at the latter. 
+
+![Pulp Fiction](pulp_fiction.gif)
+
+## What?
+
+`minitest-english` augments MiniTest's assertion and expectation naming with semantically symmetric aliases.
+
+## Why?
+ 
+### Assertions
+
+MiniTest provides a variety of positive and negative assertions:
+
+```ruby
+assert_equals true, true
+refute_equals true, false
+assert_nil nil
+refute_nil true
+# etc.
+```
+
+__"Refute" is not an antonym of "assert." A refutation requires proof, not just assertion.__
+
+### Expectations
+
+Every assertion has an aliased expectation:
+
+```ruby
+true.must_equal true
+true.wont_equal false
+nil.must_be_nil
+true.wont_be_nil
+# etc.
+```
+
+__"Must" is present tense but "wont" (contraction of "will not") is future tense.__
+
+## How?
+
+`minitest-english` aliases all `refute` assertions with `deny` assertions and all `wont` expectations with `must_not` expectations.
+
+It's simple and does not use `method_missing` or any other inefficient techniques.
+
+_You know it's a tiny gem when you spend longer writing the readme than the code._
+
 
 ## Installation
 
@@ -10,15 +60,39 @@ Add this line to your application's Gemfile:
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
-Or install it yourself as:
+Require it in your test_helper or spec_helper:
 
-    $ gem install minitest-english
+    require 'minitest/english'
 
 ## Usage
 
-TODO: Write usage instructions here
+Write your negative assertions with `deny`.
+```ruby
+refute_equal "English", "Do you speak it?"
+# refute* becomes deny*
+deny_equal "English", "Do you speak it?"
+```
+
+Write your negative expectations with `must_not`.
+```ruby
+"Do you speak it?".wont_equal "English"
+# wont* becomes must_not*
+"Do you speak it?".must_not_equal "English"
+```
+
+## Caveat
+
+Perhaps you prefer geometric equality to semantic equality. 
+
+```ruby
+"assert".length == "refute".length
+"must".length == "wont".length
+```
+
+If so, use `minitest-english` anyway and make your middle school English teacher proud.
+
 
 ## Contributing
 
