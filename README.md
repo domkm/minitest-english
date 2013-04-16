@@ -27,7 +27,7 @@ refute_nil true
 # etc.
 ```
 
-__"Refute" is not an antonym of "assert." A refutation requires proof, not just assertion.__
+__"Refute" is not an antonym of "assert." Refutation requires proof, not just assertion.__
 
 ### Expectations
 
