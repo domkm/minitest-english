@@ -1,4 +1,4 @@
-# minitest-english [![Gem Version](https://badge.fury.io/rb/minitest-english.png)](https://rubygems.org/gems/minitest-english) [![Build Status](https://travis-ci.org/domkm/minitest-english.png)](https://travis-ci.org/domkm/minitest-english)
+# minitest-english [![Gem Version](https://badge.fury.io/rb/minitest-english.png)](https://rubygems.org/gems/minitest-english) [![Build Status](https://travis-ci.org/DomKM/minitest-english.png)](https://travis-ci.org/DomKM/minitest-english)
 
 MiniTest is an awesome testing framework. It's small, fast, and has very little magic.
 
