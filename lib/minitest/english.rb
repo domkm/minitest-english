@@ -5,18 +5,28 @@ module MiniTest
   module English
     class << self
 
-      def register_assertion(regex, &block)
-        register MiniTest::Assertions, regex, &block
+      def register_assertion(regex, english = nil, &block)
+        register MiniTest::Assertions, regex, english, &block
       end
 
-      def register_expectation(regex, &block)
-        register MiniTest::Expectations, regex, &block
+      def register_expectation(regex, english = nil, &block)
+        register MiniTest::Expectations, regex, english, &block
       end
 
-      def register(mod, regex, &block)
-        watch mod
+      def register(mod, regex, english = nil, &block)
+        unless english.is_a? String or block_given?
+          raise ArgumentError.new "missing substitution string or block"
+        end
+
+        block ||= proc do |captures|
+          captures.each_with_object(english.dup) do |cap, str|
+            str.sub! '*', cap
+          end
+        end
+
         REGISTRATIONS[mod][regex] = block
-        scan mod
+        watch mod
+        scan  mod
         true
       end
 
@@ -28,8 +38,8 @@ module MiniTest
         if method
           REGISTRATIONS[mod].each do |regex, block|
             next unless match = regex.match(method)
-            mod.module_exec(match, block) do |match, block|
-              alias_method block.call(match.captures), match.to_s
+            mod.module_exec(match, block) do
+             alias_method block.(match.captures), match.to_s
             end
           end
         else
