@@ -1,3 +1,3 @@
 require 'minitest/english'
 
-MiniTest::English.register_assertion /\Arefute(.*)\z/, 'deny*'
+MiniTest::English.register_assertion 'refute*', 'deny*'

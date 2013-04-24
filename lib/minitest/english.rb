@@ -5,26 +5,19 @@ module MiniTest
   module English
     class << self
 
-      def register_assertion(regex, english = nil, &block)
-        register MiniTest::Assertions, regex, english, &block
+      def register_assertion(matcher, replacement)
+        matcher, block = parse!(matcher, replacement)
+        register MiniTest::Assertions, matcher, &block
       end
 
-      def register_expectation(regex, english = nil, &block)
-        register MiniTest::Expectations, regex, english, &block
+      def register_expectation(matcher, replacement)
+        matcher, block = parse!(matcher, replacement)
+        register MiniTest::Expectations, matcher, &block
       end
 
-      def register(mod, regex, english = nil, &block)
-        unless english.is_a? String or block_given?
-          raise ArgumentError.new "missing substitution string or block"
-        end
-
-        block ||= proc do |captures|
-          captures.each_with_object(english.dup) do |cap, str|
-            str.sub! '*', cap
-          end
-        end
-
-        REGISTRATIONS[mod][regex] = block
+      def register(mod, matcher, &block)
+        validate! mod, matcher, &block
+        REGISTRATIONS[mod][matcher] = block
         watch mod
         scan  mod
         true
@@ -59,6 +52,32 @@ module MiniTest
             MiniTest::English.send :scan, self, method
             minitest_english_method_added method
           end
+        end
+      end
+
+      def parse!(matcher, replacement)
+        unless matcher.count('*') == replacement.count('*')
+          raise ArgumentError.new "Expected matching number of wildcards; got #{matcher}, #{replacement}"
+        end
+        [
+          /\A#{matcher.gsub('*','(.*)')}\z/,
+          proc do |captures|
+            captures.each_with_object(replacement.dup) do |cap, str|
+              str.sub! '*', cap
+            end
+          end
+        ]
+      end
+
+      def validate!(mod, matcher, &block)
+        unless mod.is_a? Module or mod.is_a? Class
+          raise ArgumentError.new "Expected Module or Class; received: #{mod.class}"
+        end
+        unless matcher.is_a? Regexp
+          raise ArgumentError.new "Expected Regex; received: #{matcher.class}"
+        end
+        unless block_given?
+          raise ArgumentError.new 'Expected a block to be passed'
         end
       end
 
